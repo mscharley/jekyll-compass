@@ -12,7 +12,7 @@ Synopsis
 --------
 
 jekyll-compass is a jekyll plugin that provides an interface between Jekyll's building commands and the Compass
-libraries to automatically build your Compass SASS files during a regular website build. This means your CSS files
+libraries to automatically build your Compass Sass files during a regular website build. This means your CSS files
 end up directly in your `_site` output folder and never need to be checked into your version control.
 
 Installation

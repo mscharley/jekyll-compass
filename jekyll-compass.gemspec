@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.summary     = "Jekyll generator plugin to build Compass projects during site build"
   s.description = <<-EOF
     This project is a plugin for the Jekyll static website generator to allow for using Compass projects with your
-    Jekyll website. Compass is an extension library for the CSS preprocessor SASS.
+    Jekyll website. Compass is an extension library for the CSS preprocessor Sass.
   EOF
   s.license     = 'MIT'
   s.authors     = ["Matthew Scharley"]
