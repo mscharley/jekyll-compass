@@ -1,11 +1,11 @@
 jekyll-compass: Compass generator for Jekyll websites
 =====================================================
 
-**GitHub:** https://github.com/mscharley/jekyll-compass
-**Author:** Matthew Scharley
-**Contributors:** [See contributors on GitHub][gh-contrib]
-**Bugs/Support:** [Github Issues][gh-issues]
-**Copyright:** 2013
+**GitHub:** https://github.com/mscharley/jekyll-compass  
+**Author:** Matthew Scharley  
+**Contributors:** [See contributors on GitHub][gh-contrib]  
+**Bugs/Support:** [Github Issues][gh-issues]  
+**Copyright:** 2013  
 **License:** [MIT license][license]
 
 Synopsis
