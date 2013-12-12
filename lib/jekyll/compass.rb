@@ -53,7 +53,7 @@ module Jekyll
       ::Compass.configuration.on_sprite_removed do |filename|
         site.static_files = site.static_files.select do |p|
           if p.path == filename
-            sprite_output p.destination(site.config['destination'])
+            sprite_output = p.destination(site.config['destination'])
             File.delete sprite_output if File.exist? sprite_output
             false
           else
