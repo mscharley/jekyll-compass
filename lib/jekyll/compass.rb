@@ -34,6 +34,7 @@ module Jekyll
           :line_comments => false,
           :environment => :production,
           :output_style => :compact,
+          :force => true,
           #:quiet => true,
           :sass_options => {
               :unix_newlines => true,
