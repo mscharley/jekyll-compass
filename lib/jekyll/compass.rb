@@ -3,7 +3,7 @@ require 'sass/plugin'
 require 'compass'
 require 'compass/commands'
 require 'fileutils'
-require 'jekyll-compass/core_ext'
+require 'jekyll/compass/core_ext'
 
 module Jekyll
   class CompassFile < StaticFile
