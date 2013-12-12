@@ -3,6 +3,7 @@ require 'sass/plugin'
 require 'compass'
 require 'compass/commands'
 require 'fileutils'
+require 'jekyll/compass/core_ext'
 
 module Jekyll
   class CompassFile < StaticFile
@@ -35,11 +36,13 @@ module Jekyll
           :environment => :production,
           :output_style => :compact,
           :force => true,
-          #:quiet => true,
           :sass_options => {
               :unix_newlines => true,
           },
       }
+
+      user_config = site.config['compass']
+      config.deep_merge!(user_config.symbolize_keys) if user_config
 
       ::Compass.add_configuration(config, 'Jekyll::Compass')
       ::Compass.configuration.on_sprite_saved do |filename|
