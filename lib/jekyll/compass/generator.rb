@@ -36,6 +36,7 @@ module Jekyll
             :javascripts_path => File.join(source, 'js'),
             :environment => :production,
             :output_style => :compact,
+            :force => true,
         }
 
         user_config = @site.config['compass']
