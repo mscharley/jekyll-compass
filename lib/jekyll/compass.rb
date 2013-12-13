@@ -42,17 +42,14 @@ module Jekyll
           :css_path => output_directory,
           :images_path => File.join(source, 'images'),
           :javascripts_path => File.join(source, 'js'),
-          :line_comments => false,
           :environment => :production,
           :output_style => :compact,
-          :force => true,
-          :sass_options => {
-              :unix_newlines => true,
-          },
       }
 
       user_config = @site.config['compass']
       config.deep_merge!(user_config.symbolize_keys) if user_config
+      user_data = @site.data['compass']
+      config.deep_merge!(user_data.symbolize_keys) if user_data
 
       config
     end
