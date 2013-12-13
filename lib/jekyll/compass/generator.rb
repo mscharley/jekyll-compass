@@ -6,6 +6,10 @@ require 'fileutils'
 
 module Jekyll
   module Compass
+    # This is the main generator plugin for Jekyll. Jekyll finds these plugins
+    # itself, we just need to be setup by the user as a gem plugin for their
+    # website. The plugin will only do something if there is a `_sass` folder
+    # in the source folder of the Jekyll website.
     class Generator < ::Jekyll::Generator
       safe true
       priority :high

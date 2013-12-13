@@ -12,12 +12,17 @@ end
 
 desc "Cleans unneeded or old files"
 task :clean do
-  Dir['*.gem'].each do |f|
-    rm f
+  Dir['{*.gem,doc}'].each do |f|
+    rm_rf f
   end
 end
 
 desc "Install locally"
 task :install => [:clean, :build] do
   sh 'gem', 'install', *Dir['*.gem']
+end
+
+desc "Create the documentation for the project"
+task :doc do
+  sh 'yard'
 end
