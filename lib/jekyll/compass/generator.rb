@@ -14,6 +14,11 @@ module Jekyll
       safe true
       priority :high
 
+      # This is the entry point to our plugin from Jekyll. We setup a compass
+      # environment and force a full compilation directly into the Jekyll output
+      # folder.
+      #
+      # @return void
       def generate(site)
         @site = site
         input_directory = File.join(@site.source, '_sass')
@@ -35,6 +40,13 @@ module Jekyll
 
       private
 
+      # Compile a configuration Hash from sane defaults mixed with user input
+      # from `_config.yml` as well as `_data/compass.yml`.
+      #
+      # @param source [String] The project source folder
+      # @param input_directory [String] The folder containing the Sass files
+      # @param output_directory [String] The folder to output CSS files to
+      # @return [Hash]
       def configuration(source, input_directory, output_directory)
         config = {
             :project_path => source,
@@ -49,13 +61,18 @@ module Jekyll
         }
 
         user_config = @site.config['compass']
-        config.deep_merge!(user_config.symbolize_keys) if user_config
+        config = deep_merge!(config, symbolize_keys(user_config)) if user_config
         user_data = @site.data['compass']
-        config.deep_merge!(user_data.symbolize_keys) if user_data
+        config = deep_merge!(config, symbolize_keys(user_data)) if user_data
 
         config
       end
 
+      # Sets up event handlers with Compass and various other
+      # configuration setup needs
+      #
+      # @param config [Hash] Configuration to pass to Compass and Sass
+      # @return [void]
       def configure_compass(config)
         ::Compass.add_configuration(config, 'Jekyll::Compass')
 
@@ -68,8 +85,13 @@ module Jekyll
         ::Compass.configuration.on_sprite_removed(
             &method(:on_sprite_removed)
         )
+        nil
       end
 
+      # Event handler triggered when Compass creates a new stylesheet
+      #
+      # @param filename [String] The name of the created stylesheet.
+      # @return [void]
       def on_stylesheet_saved(filename)
         source = @site.config['destination']
         @site.static_files <<
@@ -79,8 +101,13 @@ module Jekyll
                 File.dirname(filename)[source.length..-1],
                 File.basename(filename)
             )
+        nil
       end
 
+      # Event handler triggered when Compass creates a new sprite image
+      #
+      # @param filename [String] The name of the created image.
+      # @return [void]
       def on_sprite_saved(filename)
         @site.static_files <<
             StaticFile.new(
@@ -89,8 +116,13 @@ module Jekyll
                 File.dirname(filename)[@site.source.length..-1],
                 File.basename(filename)
             )
+        nil
       end
 
+      # Event handler triggered when Compass deletes a stylesheet
+      #
+      # @param filename [String] The name of the deleted stylesheet.
+      # @return [void]
       def on_sprite_removed(filename)
         @site.static_files = @site.static_files.select do |p|
           if p.path == filename
@@ -101,6 +133,38 @@ module Jekyll
             true
           end
         end
+        nil
+      end
+
+      # Merges a target hash with another hash, recursively.
+      #
+      # @param target [Hash] The target hash
+      # @param merge [Hash] The hash to merge into the target
+      # @return [Hash] Returns the merged target
+      def deep_merge!(target, merge)
+        merge.keys.each do |key|
+          if merge[key].is_a? Hash and target[key].is_a? Hash
+            target[key] = deep_merge!(target[key], merge[key])
+          else
+            target[key] = merge[key]
+          end
+        end
+
+        target
+      end
+
+      # Turn all String keys of a hash into symbols, and return in another Hash.
+      #
+      # @param hash [Hash] The hash to convert
+      # @return [Hash] Returns the symbolized copy of hash.
+      def symbolize_keys(hash)
+        target = hash.dup
+
+        keys.each do |key|
+          self[(key.to_sym rescue key) || key] = delete(key)
+        end
+
+        target
       end
     end
   end
