@@ -26,11 +26,7 @@ module Jekyll
       puts
 
       config = configuration(@site.source, input_directory, File.join(@site.config['destination'], 'css'))
-      ::Compass.add_configuration(config, 'Jekyll::Compass')
-
-      ::Compass.configuration.on_stylesheet_saved(&method(:on_stylesheet_saved))
-      ::Compass.configuration.on_sprite_saved(&method(:on_sprite_saved))
-      ::Compass.configuration.on_sprite_removed(&method(:on_sprite_removed))
+      configure_compass(config)
 
       ::Compass::Commands::UpdateProject.new(site.config['source'], config).execute
       nil
@@ -39,7 +35,6 @@ module Jekyll
     private
 
     def configuration(source, input_directory, output_directory)
-
       config = {
           :project_path => source,
           :http_path => '/',
@@ -60,6 +55,14 @@ module Jekyll
       config.deep_merge!(user_config.symbolize_keys) if user_config
 
       config
+    end
+
+    def configure_compass(config)
+      ::Compass.add_configuration(config, 'Jekyll::Compass')
+
+      ::Compass.configuration.on_stylesheet_saved &method(:on_stylesheet_saved)
+      ::Compass.configuration.on_sprite_saved &method(:on_sprite_saved)
+      ::Compass.configuration.on_sprite_removed &method(:on_sprite_removed)
     end
 
     def on_stylesheet_saved(filename)
