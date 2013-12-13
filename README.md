@@ -35,6 +35,27 @@ Usage
 Simply setup your SASS files in the `_sass` folder in your websites root folder. Then run `jekyll build` and watch the
 magic.
 
+Configuration
+-------------
+
+You may add a file to your `_data` folder called `compass.yml`. This will contain overrides for the compass
+configuration, similar to the `config.rb` in a regular compass project. Any of the
+[regular configuration properties][compass-props] should be supported via the YAML file.
+
+Compass also provides a way to pass through options directly to Sass via the `sass_options` option. You can find
+details of what options are available from Sass in the [Sass Reference][sass-props].
+
+An example configuration file might look like the following:
+
+    output_style: compact
+    sass_options:
+      unix_newlines: true
+
+
+
   [license]: https://raw.github.com/mscharley/jekyll-compass/master/LICENSE
   [gh-contrib]: https://github.com/mscharley/jekyll-compass/graphs/contributors
   [gh-issues]: https://github.com/mscharley/jekyll-compass/issues
+
+  [compass-props]: http://compass-style.org/help/tutorials/configuration-reference/
+  [sass-props]: http://sass-lang.com/documentation/file.SASS_REFERENCE.html#options
