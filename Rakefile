@@ -12,8 +12,9 @@ end
 
 desc "Cleans unneeded or old files"
 task :clean do
-  files = Dir['*.gem']
-  rm_rf *Dir['*.gem'] unless files.empty?
+  Dir['*.gem'].each do |f|
+    rm f
+  end
 end
 
 desc "Install locally"
