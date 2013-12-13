@@ -3,6 +3,7 @@ require 'sass/plugin'
 require 'compass'
 require 'compass/commands'
 require 'fileutils'
+
 require 'jekyll/compass/core_ext'
 
 module Jekyll
@@ -18,20 +19,34 @@ module Jekyll
     priority :high
 
     def generate(site)
-      input = File.join(site.source, '_sass')
+      @site = site
+      input_directory = File.join(@site.source, '_sass')
 
-      return unless File.exist? input
+      return unless File.exist? input_directory
       puts
 
-      output = File.join(site.config['destination'], 'css')
+      config = configuration(@site.source, input_directory, File.join(@site.config['destination'], 'css'))
+      ::Compass.add_configuration(config, 'Jekyll::Compass')
+
+      ::Compass.configuration.on_stylesheet_saved(&method(:on_stylesheet_saved))
+      ::Compass.configuration.on_sprite_saved(&method(:on_sprite_saved))
+      ::Compass.configuration.on_sprite_removed(&method(:on_sprite_removed))
+
+      ::Compass::Commands::UpdateProject.new(site.config['source'], config).execute
+      nil
+    end
+
+    private
+
+    def configuration(source, input_directory, output_directory)
 
       config = {
-          :project_path => site.source,
+          :project_path => source,
           :http_path => '/',
-          :sass_path => input,
-          :css_path => output,
-          :images_path => File.join(site.source, 'images'),
-          :javascripts_path => File.join(site.source, 'js'),
+          :sass_path => input_directory,
+          :css_path => output_directory,
+          :images_path => File.join(source, 'images'),
+          :javascripts_path => File.join(source, 'js'),
           :line_comments => false,
           :environment => :production,
           :output_style => :compact,
@@ -41,33 +56,31 @@ module Jekyll
           },
       }
 
-      user_config = site.config['compass']
+      user_config = @site.config['compass']
       config.deep_merge!(user_config.symbolize_keys) if user_config
 
-      ::Compass.add_configuration(config, 'Jekyll::Compass')
-      ::Compass.configuration.on_sprite_saved do |filename|
-        site.static_files << StaticFile.new(site, site.source, File.dirname(filename)[site.source.length..-1], File.basename(filename))
-      end
-      ::Compass.configuration.on_stylesheet_saved do |filename|
-        source = site.config['destination']
-        site.static_files << CompassFile.new(site, source, File.dirname(filename)[source.length..-1], File.basename(filename))
-      end
+      config
+    end
 
-      # Manually mangle the output directory to keep it in sync with what Compass expects and Jekyll produces
-      ::Compass.configuration.on_sprite_removed do |filename|
-        site.static_files = site.static_files.select do |p|
-          if p.path == filename
-            sprite_output = p.destination(site.config['destination'])
-            File.delete sprite_output if File.exist? sprite_output
-            false
-          else
-            true
-          end
+    def on_stylesheet_saved(filename)
+      source = @site.config['destination']
+      @site.static_files << CompassFile.new(@site, source, File.dirname(filename)[source.length..-1], File.basename(filename))
+    end
+
+    def on_sprite_saved(filename)
+        @site.static_files << StaticFile.new(@site, @site.source, File.dirname(filename)[@site.source.length..-1], File.basename(filename))
+    end
+
+    def on_sprite_removed(filename)
+      @site.static_files = @site.static_files.select do |p|
+        if p.path == filename
+          sprite_output = p.destination(@site.config['destination'])
+          File.delete sprite_output if File.exist? sprite_output
+          false
+        else
+          true
         end
       end
-
-      ::Compass::Commands::UpdateProject.new(site.config['source'], config).execute
-      nil
     end
   end
 end
