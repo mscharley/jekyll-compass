@@ -17,10 +17,15 @@ module Jekyll
         return unless File.exist? input_directory
         puts
 
-        config = configuration(@site.source, input_directory, File.join(@site.config['destination'], 'css'))
+        config = configuration(
+            @site.source,
+            input_directory,
+            File.join(@site.config['destination'], 'css')
+        )
         configure_compass(config)
 
-        ::Compass::Commands::UpdateProject.new(site.config['source'], config).execute
+        ::Compass::Commands::UpdateProject.new(site.config['source'], config).
+            execute
         nil
       end
 
@@ -50,18 +55,36 @@ module Jekyll
       def configure_compass(config)
         ::Compass.add_configuration(config, 'Jekyll::Compass')
 
-        ::Compass.configuration.on_stylesheet_saved &method(:on_stylesheet_saved)
-        ::Compass.configuration.on_sprite_saved &method(:on_sprite_saved)
-        ::Compass.configuration.on_sprite_removed &method(:on_sprite_removed)
+        ::Compass.configuration.on_stylesheet_saved(
+            &method(:on_stylesheet_saved)
+        )
+        ::Compass.configuration.on_sprite_saved(
+            &method(:on_sprite_saved)
+        )
+        ::Compass.configuration.on_sprite_removed(
+            &method(:on_sprite_removed)
+        )
       end
 
       def on_stylesheet_saved(filename)
         source = @site.config['destination']
-        @site.static_files << CompassFile.new(@site, source, File.dirname(filename)[source.length..-1], File.basename(filename))
+        @site.static_files <<
+            CompassFile.new(
+                @site,
+                source,
+                File.dirname(filename)[source.length..-1],
+                File.basename(filename)
+            )
       end
 
       def on_sprite_saved(filename)
-        @site.static_files << StaticFile.new(@site, @site.source, File.dirname(filename)[@site.source.length..-1], File.basename(filename))
+        @site.static_files <<
+            StaticFile.new(
+                @site,
+                @site.source,
+                File.dirname(filename)[@site.source.length..-1],
+                File.basename(filename)
+            )
       end
 
       def on_sprite_removed(filename)
