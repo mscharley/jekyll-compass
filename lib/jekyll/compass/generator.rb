@@ -18,7 +18,8 @@ module Jekyll
       # environment and force a full compilation directly into the Jekyll output
       # folder.
       #
-      # @return void
+      # @param site [Jekyll::Site] The site to generate for
+      # @return [void]
       def generate(site)
         @site = site
         input_directory = File.join(@site.source, '_sass')
