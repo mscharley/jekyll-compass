@@ -161,8 +161,8 @@ module Jekyll
       def symbolize_keys(hash)
         target = hash.dup
 
-        keys.each do |key|
-          self[(key.to_sym rescue key) || key] = delete(key)
+        target.keys.each do |key|
+          target[(key.to_sym rescue key) || key] = target.delete(key)
         end
 
         target
