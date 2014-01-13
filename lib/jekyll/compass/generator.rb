@@ -27,7 +27,7 @@ module Jekyll
         puts "\rGenerating Compass: #{config[:sass_path]}" +
                  " => #{config[:css_path]}"
         unless File.exist? config[:sass_path]
-          puts "      Generating..."
+          print "      Generating... "
           return
         end
         configure_compass(config)
@@ -36,7 +36,7 @@ module Jekyll
             execute
 
         puts
-        puts "      Generating..."
+        print "      Generating... "
         nil
       end
 
@@ -187,7 +187,11 @@ module Jekyll
         target = hash.dup
 
         target.keys.each do |key|
-          target[(key.to_sym rescue key) || key] = target.delete(key)
+          value = target.delete(key)
+          if value.is_a? Hash
+            value = symbolize_keys(value)
+          end
+          target[(key.to_sym rescue key) || key] = value
         end
 
         target
