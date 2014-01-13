@@ -73,6 +73,24 @@ module Jekyll
               File.join(@site.config['destination'], config[:css_dir])
         end
 
+        symbolize_configuration!(config)
+      end
+
+      # Symbolize values for configuration values which require it.
+      #
+      # @param config [Hash]
+      # @return [Hash]
+      def symbolize_configuration!(config)
+        [
+            :project_type,
+            :environment,
+            :output_style,
+            :preferred_syntax,
+            :sprite_engine,
+        ].each do |k|
+          config[k] = config[k].to_sym if config.key? k
+        end
+
         config
       end
 
