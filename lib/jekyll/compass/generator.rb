@@ -22,20 +22,21 @@ module Jekyll
       # @return [void]
       def generate(site)
         @site = site
-        input_directory = File.join(@site.source, '_sass')
 
-        return unless File.exist? input_directory
-        puts
-
-        config = configuration(
-            @site.source,
-            input_directory,
-            File.join(@site.config['destination'], 'css')
-        )
+        config = configuration(@site.source)
+        puts "\rGenerating Compass: #{config[:sass_path]}" +
+                 " => #{config[:css_path]}"
+        unless File.exist? config[:sass_path]
+          puts "      Generating..."
+          return
+        end
         configure_compass(config)
 
         ::Compass::Commands::UpdateProject.new(site.config['source'], config).
             execute
+
+        puts
+        puts "      Generating..."
         nil
       end
 
@@ -45,19 +46,16 @@ module Jekyll
       # from `_config.yml` as well as `_data/compass.yml`.
       #
       # @param source [String] The project source folder
-      # @param input_directory [String] The folder containing the Sass files
-      # @param output_directory [String] The folder to output CSS files to
       # @return [Hash]
-      def configuration(source, input_directory, output_directory)
+      def configuration(source)
         config = {
             :project_path => source,
             :http_path => '/',
-            :sass_path => input_directory,
-            :css_path => output_directory,
+            :sass_dir => '_sass',
+            :css_dir => 'css',
             :images_path => File.join(source, 'images'),
             :javascripts_path => File.join(source, 'js'),
             :environment => :production,
-            :output_style => :compact,
             :force => true,
         }
 
@@ -65,6 +63,15 @@ module Jekyll
         config = deep_merge!(config, symbolize_keys(user_config)) if user_config
         user_data = @site.data['compass']
         config = deep_merge!(config, symbolize_keys(user_data)) if user_data
+
+        unless config.key? :sass_path
+          config[:sass_path] =
+              File.join(source, config[:sass_dir])
+        end
+        unless config.key? :css_path
+          config[:css_path] =
+              File.join(@site.config['destination'], config[:css_dir])
+        end
 
         config
       end
