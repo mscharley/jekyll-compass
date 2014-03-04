@@ -16,5 +16,11 @@ module Jekyll
   end
 end
 
+# Require dependencies
+require 'jekyll'
+require 'sass/plugin'
+require 'compass/commands'
+
+# Internal requires
 require 'jekyll/compass/compass_file'
 require 'jekyll/compass/generator'

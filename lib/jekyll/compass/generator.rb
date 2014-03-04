@@ -1,7 +1,3 @@
-
-require 'sass/plugin'
-require 'compass'
-require 'compass/commands'
 require 'fileutils'
 
 module Jekyll
