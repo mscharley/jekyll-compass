@@ -56,7 +56,7 @@ You must compile your Sass stylesheets into CSS when they change.
 This can be done in one of the following ways:
   1. To compile on demand:
      compass compile --app=jekyll -r jekyll-compass (just compile your Sass)
-     jekyll build (compile your entire website)
+     jekyll build (compile your entire website, including Sass)
   2. To monitor your project for changes and automatically recompile:
      compass watch --app=jekyll -r jekyll-compass (just watches your Sass)
 

@@ -19,6 +19,7 @@ end
 # Require dependencies
 require 'jekyll'
 require 'sass/plugin'
+require 'compass'
 require 'compass/commands'
 
 # Internal requires

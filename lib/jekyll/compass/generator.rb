@@ -20,16 +20,15 @@ module Jekyll
         @site = site
 
         config = configuration(@site.source)
-        puts "\rGenerating Compass: #{config[:sass_path]}" +
-                 " => #{config[:css_path]}"
-        unless File.exist? config[:sass_path]
+        configure_compass(config)
+        puts "\rGenerating Compass: #{::Compass.configuration.sass_path}" +
+                 " => #{::Compass.configuration.css_path}"
+        unless File.exist? ::Compass.configuration.sass_dir
           print "      Generating... "
           return
         end
-        configure_compass(config)
 
-        ::Compass::Commands::UpdateProject.new(site.config['source'], config).
-            execute
+        ::Compass::Commands::UpdateProject.new(@site.config['source'], {:project_type => :jekyll}).execute
 
         puts
         print "      Generating... "
@@ -42,53 +41,24 @@ module Jekyll
       # from `_config.yml` as well as `_data/compass.yml`.
       #
       # @param source [String] The project source folder
-      # @return [Hash]
+      # @return [::Compass::Configuration::Data]
       def configuration(source)
         config = CompassConfiguration.default_configuration
         config[:project_path] = source
-
-        user_config = @site.config['compass']
-        config = deep_merge!(config, symbolize_keys(user_config)) if user_config
-        user_data = @site.data['compass']
-        config = deep_merge!(config, symbolize_keys(user_data)) if user_data
-
-        unless config.key? :sass_path
-          config[:sass_path] =
-              File.join(source, config[:sass_dir])
-        end
-        unless config.key? :css_path
-          config[:css_path] =
-              File.join(@site.config['destination'], config[:css_dir])
-        end
-
-        symbolize_configuration!(config)
-      end
-
-      # Symbolize values for configuration values which require it.
-      #
-      # @param config [Hash]
-      # @return [Hash]
-      def symbolize_configuration!(config)
-        [
-            :project_type,
-            :environment,
-            :output_style,
-            :preferred_syntax,
-            :sprite_engine,
-        ].each do |k|
-          config[k] = config[k].to_sym if config.key? k
-        end
-
-        config
+        config[:force] = true
+        config.extend(@site.config['compass'] || {})
+        config.extend(@site.data['compass'] || {})
+        config[:css_path] = File.join(@site.config['destination'], config[:css_dir]) unless config.has_key? :css_path
+        config.to_compass
       end
 
       # Sets up event handlers with Compass and various other
       # configuration setup needs
       #
-      # @param config [Hash] Configuration to pass to Compass and Sass
+      # @param config [::Compass::Configuration::Data] Configuration to pass to Compass and Sass
       # @return [void]
       def configure_compass(config)
-        ::Compass.add_configuration(config, CompassConfiguration::CONFIGURATION_NAME)
+        ::Compass.add_configuration(config)
 
         ::Compass.configuration.on_stylesheet_saved(
             &method(:on_stylesheet_saved)
@@ -148,41 +118,6 @@ module Jekyll
           end
         end
         nil
-      end
-
-      # Merges a target hash with another hash, recursively.
-      #
-      # @param target [Hash] The target hash
-      # @param merge [Hash] The hash to merge into the target
-      # @return [Hash] Returns the merged target
-      def deep_merge!(target, merge)
-        merge.keys.each do |key|
-          if merge[key].is_a? Hash and target[key].is_a? Hash
-            target[key] = deep_merge!(target[key], merge[key])
-          else
-            target[key] = merge[key]
-          end
-        end
-
-        target
-      end
-
-      # Turn all String keys of a hash into symbols, and return in another Hash.
-      #
-      # @param hash [Hash] The hash to convert
-      # @return [Hash] Returns the symbolized copy of hash.
-      def symbolize_keys(hash)
-        target = hash.dup
-
-        target.keys.each do |key|
-          value = target.delete(key)
-          if value.is_a? Hash
-            value = symbolize_keys(value)
-          end
-          target[(key.to_sym rescue key) || key] = value
-        end
-
-        target
       end
     end
   end
