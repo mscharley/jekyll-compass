@@ -44,16 +44,8 @@ module Jekyll
       # @param source [String] The project source folder
       # @return [Hash]
       def configuration(source)
-        config = {
-            :project_path => source,
-            :http_path => '/',
-            :sass_dir => '_sass',
-            :css_dir => 'css',
-            :images_path => File.join(source, 'images'),
-            :javascripts_path => File.join(source, 'js'),
-            :environment => :production,
-            :force => true,
-        }
+        config = CompassConfiguration.default_configuration
+        config[:project_path] = source
 
         user_config = @site.config['compass']
         config = deep_merge!(config, symbolize_keys(user_config)) if user_config
@@ -96,7 +88,7 @@ module Jekyll
       # @param config [Hash] Configuration to pass to Compass and Sass
       # @return [void]
       def configure_compass(config)
-        ::Compass.add_configuration(config, 'Jekyll::Compass')
+        ::Compass.add_configuration(config, CompassConfiguration::CONFIGURATION_NAME)
 
         ::Compass.configuration.on_stylesheet_saved(
             &method(:on_stylesheet_saved)

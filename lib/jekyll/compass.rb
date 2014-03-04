@@ -22,5 +22,6 @@ require 'sass/plugin'
 require 'compass/commands'
 
 # Internal requires
-require 'jekyll/compass/compass_file'
-require 'jekyll/compass/generator'
+%w{compass_configuration compass_file generator compass_app_integration}.each do |f|
+  require "jekyll/compass/#{f}"
+end

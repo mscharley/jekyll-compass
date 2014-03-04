@@ -1,2 +1,4 @@
 --color
 --max-violations 0
+--style-measure 120
+--abc-exclude Jekyll::Compass::CompassInstaller#config_contents
