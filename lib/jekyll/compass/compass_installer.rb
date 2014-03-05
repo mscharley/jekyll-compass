@@ -5,12 +5,15 @@ module Jekyll
   module Compass
     #
     class CompassInstaller < ::Compass::AppIntegration::StandAlone::Installer
-      def write_configuration_files(config_file = nil)
-        config_file ||= targetize('_data/compass.yml')
-        directory File.dirname(config_file)
-        write_file config_file, config_contents
+
+      def prepare
+        config_file = targetize('_data/compass.yml')
         directory targetize('.compass')
         write_file targetize('.compass/config.rb'), compass_config_contents
+        return if config_files_exist?
+
+        directory File.dirname(config_file)
+        write_file config_file, config_contents
       end
 
       def config_files_exist?

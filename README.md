@@ -40,6 +40,11 @@ parameters so that Compass understands the target project structure.
     compass create -r jekyll-compass --app=jekyll path/to/site/root
     compass create -r jekyll-compass --app=jekyll -r zurb-foundation path/to/site/root
 
+If you are coming from an older version of jekyll-compass and just want to install the plumbing for Compass then use
+this command:
+
+    compass init jekyll -r jekyll-compass --prepare [path/to/site/root]
+
 Other `compass` commands will then work as per usual:
 
     # Compiles all your Sass/Compass into the _site folder, or you may also specify --css-path on the command line
