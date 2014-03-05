@@ -7,10 +7,10 @@ module Jekyll
     class CompassInstaller < ::Compass::AppIntegration::StandAlone::Installer
       def write_configuration_files(config_file = nil)
         config_file ||= targetize('_data/compass.yml')
-        unless File.exists? File.dirname(config_file)
-          directory File.dirname(config_file)
-        end
+        directory File.dirname(config_file)
         write_file config_file, config_contents
+        directory targetize('.compass')
+        write_file targetize('.compass/config.rb'), compass_config_contents
       end
 
       def config_files_exist?
@@ -36,6 +36,15 @@ module Jekyll
         contents.to_yaml
       end
 
+      def compass_config_contents
+        config = ::Compass.configuration
+        contents = ''
+
+        contents << "require 'jekyll-compass'\n"
+        contents << config.serialize_property(:project_type, config.project_type)
+        contents
+      end
+
       def finalize(options = {})
         if options[:create] && !manifest.welcome_message_options[:replace]
           puts <<-NEXTSTEPS
@@ -55,10 +64,10 @@ You can configure your project by editing the _data/compass.yml configuration fi
 You must compile your Sass stylesheets into CSS when they change.
 This can be done in one of the following ways:
   1. To compile on demand:
-     compass compile --app=jekyll -r jekyll-compass (just compile your Sass)
+     compass compile (just compile your Sass)
      jekyll build (compile your entire website, including Sass)
   2. To monitor your project for changes and automatically recompile:
-     compass watch --app=jekyll -r jekyll-compass (just watches your Sass)
+     compass watch (just watches your Sass)
 
 More Resources:
   * Website: http://compass-style.org/
@@ -77,7 +86,7 @@ More Resources:
           $stderr.puts "WARNING: #{prop} is code and cannot be written to a file. You'll need to copy it yourself."
           return
         end
-        return if [:project_path, :project_type].include? prop
+        return if [:project_type].include? prop
         return if value.nil?
 
         if value.is_a? Symbol

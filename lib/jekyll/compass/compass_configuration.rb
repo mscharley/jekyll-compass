@@ -25,13 +25,16 @@ module Jekyll
         value = value.to_sym if SYMBOL_VALUES.include? key
 
         if value.is_a? Hash
+          @data[key] = {} unless @data[key].is_a? Hash
           value.each do |subkey, subvalue|
             subkey = subkey.to_sym unless subkey.is_a? Symbol
+            subvalue = subvalue.to_sym if SYMBOL_VALUES.include? subkey
             @data[key][subkey] = subvalue
           end
+        else
+          @data[key] = value
         end
 
-        @data[key] = value
       end
 
       def [](key)
@@ -39,7 +42,22 @@ module Jekyll
       end
 
       def to_compass
-        ::Compass::Configuration::Data.new(CONFIGURATION_NAME, @data)
+        required = @data.delete(:require) || []
+        load = @data.delete(:load) || []
+        discover = @data.delete(:discover) || []
+
+        config = ::Compass::Configuration::Data.new(CONFIGURATION_NAME, @data)
+        required.each do |name|
+          config.require(name)
+        end
+        load.each do |name|
+          config.load(name)
+        end
+        discover.each do |name|
+          config.discover(name)
+        end
+
+        config
       end
 
       private

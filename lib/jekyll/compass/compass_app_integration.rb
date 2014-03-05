@@ -19,6 +19,7 @@ module Jekyll
           config = CompassConfiguration.default_configuration
         end
         config[:config_file] = config_file
+
         config.to_compass
       end
     end
