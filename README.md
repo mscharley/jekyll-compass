@@ -81,6 +81,11 @@ In order to use other plugins for compass, add them to the `require` key in your
     require:
     - zurb-foundation
 
+There is also a `import_paths` key which is analogous to the `add_import_path` line in `config.rb`.
+
+    import_paths:
+    - assets/foundation/scss
+
   [license]: https://raw.github.com/mscharley/jekyll-compass/master/LICENSE
   [gh-contrib]: https://github.com/mscharley/jekyll-compass/graphs/contributors
   [gh-issues]: https://github.com/mscharley/jekyll-compass/issues
