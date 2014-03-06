@@ -45,7 +45,7 @@ module Jekyll
         required = @data.delete(:require) || []
         load = @data.delete(:load) || []
         discover = @data.delete(:discover) || []
-        include_paths = @data.delete(:include_paths) || []
+        import_paths = @data.delete(:import_paths) || []
 
         config = ::Compass::Configuration::Data.new(CONFIGURATION_NAME, @data)
         required.each do |name|
@@ -57,7 +57,7 @@ module Jekyll
         discover.each do |name|
           config.discover(name)
         end
-        include_paths.each do |path|
+        import_paths.each do |path|
           config.add_import_path(path)
         end
 
