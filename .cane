@@ -3,3 +3,4 @@
 --style-measure 120
 --abc-exclude Jekyll::Compass::CompassInstaller#config_contents
 --abc-exclude Jekyll::Compass::CompassConfiguration#to_compass
+--abc-exclude Jekyll::Compass::Generator#configure_compass

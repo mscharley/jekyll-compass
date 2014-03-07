@@ -45,7 +45,6 @@ module Jekyll
       def configuration(source)
         config = CompassConfiguration.default_configuration
         config[:project_path] = source
-        config[:force] = true
         config.extend(@site.config['compass'] || {})
         config.extend(@site.data['compass'] || {})
         config[:css_path] = File.join(@site.config['destination'], config[:css_dir]) unless config.has_key? :css_path
@@ -69,6 +68,18 @@ module Jekyll
         ::Compass.configuration.on_sprite_removed(
             &method(:on_sprite_removed)
         )
+
+        Dir["#{::Compass.configuration.css_path}/**/*"].each do |path|
+          source = @site.config['destination']
+          @site.static_files <<
+              CompassFile.new(
+                  @site,
+                  source,
+                  File.dirname(path)[source.length..-1],
+                  File.basename(path)
+              )
+        end
+
         nil
       end
 
