@@ -71,6 +71,7 @@ This can be done in one of the following ways:
      jekyll build (compile your entire website, including Sass)
   2. To monitor your project for changes and automatically recompile:
      compass watch (just watches your Sass)
+     jekyll serve --watch (watch your entire website, including Sass)
 
 More Resources:
   * Website: http://compass-style.org/

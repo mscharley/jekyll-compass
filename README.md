@@ -51,12 +51,12 @@ Other `compass` commands will then work as per usual:
     compass compile
     compass watch
 
-You will also note that Compass will build your Sass files whenever jekyll builds the rest of your website, ensuring
+You will also note that Compass will build your Sass files whenever Jekyll builds the rest of your website, ensuring
 that what you publish is always up to date.
 
     # Compiles your entire website, including Sass/Compass
     jekyll build
-    jekyll serve
+    jekyll serve --watch
 
 Configuration
 -------------
