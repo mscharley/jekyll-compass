@@ -21,12 +21,10 @@ module Jekyll
 
         config = configuration(@site.source)
         configure_compass(config)
+
+        return unless File.exist? ::Compass.configuration.sass_path
         puts "\rGenerating Compass: #{::Compass.configuration.sass_path}" +
                  " => #{::Compass.configuration.css_path}"
-        unless File.exist? ::Compass.configuration.sass_dir
-          print "      Generating... "
-          return
-        end
 
         ::Compass::Commands::UpdateProject.new(@site.config['source'], {:project_type => :jekyll}).execute
 
@@ -47,7 +45,9 @@ module Jekyll
         config[:project_path] = source
         config.extend(@site.config['compass'] || {})
         config.extend(@site.data['compass'] || {})
-        config[:css_path] = File.join(@site.config['destination'], config[:css_dir]) unless config.has_key? :css_path
+        unless config.has_key? :css_path
+          config[:css_path] = File.join(real_destination, config[:css_dir])
+        end
         config.to_compass
       end
 
@@ -70,7 +70,7 @@ module Jekyll
         )
 
         Dir["#{::Compass.configuration.css_path}/**/*"].each do |path|
-          source = @site.config['destination']
+          source = real_destination
           @site.static_files <<
               CompassFile.new(
                   @site,
@@ -88,7 +88,7 @@ module Jekyll
       # @param filename [String] The name of the created stylesheet.
       # @return [void]
       def on_stylesheet_saved(filename)
-        source = @site.config['destination']
+        source = real_destination
         @site.static_files <<
             CompassFile.new(
                 @site,
@@ -121,7 +121,7 @@ module Jekyll
       def on_sprite_removed(filename)
         @site.static_files = @site.static_files.select do |p|
           if p.path == filename
-            sprite_output = p.destination(@site.config['destination'])
+            sprite_output = p.destination(real_destination)
             File.delete sprite_output if File.exist? sprite_output
             false
           else
@@ -129,6 +129,10 @@ module Jekyll
           end
         end
         nil
+      end
+
+      def real_destination
+        File.expand_path @site.config['destination']
       end
     end
   end
