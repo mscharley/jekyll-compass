@@ -83,7 +83,7 @@ module Jekyll
           new({
               :default_project_type => :jekyll,
               :http_path => '/',
-              :sass_dir => '_sass',
+              :sass_dir => '_compass',
               :css_dir => 'css',
               :images_dir => 'images',
               :javascripts_dir => 'javascripts',

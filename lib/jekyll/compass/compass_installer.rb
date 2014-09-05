@@ -64,6 +64,10 @@ compiled to CSS, but they can be imported into other sass stylesheets.
 
 You can configure your project by editing the _data/compass.yml configuration file.
 
+If you are using the jekyll new site template installed with `jekyll new` then
+you may wish to move some of the files from _sass to _compass and then remove
+this folder along with the css folder.
+
 You must compile your Sass stylesheets into CSS when they change.
 This can be done in one of the following ways:
   1. To compile on demand:
