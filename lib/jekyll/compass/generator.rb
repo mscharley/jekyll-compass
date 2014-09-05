@@ -22,7 +22,10 @@ module Jekyll
         config = configuration(@site.source)
         configure_compass(config)
 
-        return unless File.exist? ::Compass.configuration.sass_path
+        unless File.exist? ::Compass.configuration.sass_path
+          puts "Unable to find a valid configuration: sass_path=#{::Compass.configuration.sass_path}"
+          return
+        end
         puts "\rGenerating Compass: #{::Compass.configuration.sass_path}" +
                  " => #{::Compass.configuration.css_path}"
 
@@ -45,6 +48,9 @@ module Jekyll
         config[:project_path] = source
         config.extend(@site.config['compass'] || {})
         config.extend(@site.data['compass'] || {})
+        unless config.has_key? :sass_path
+          config[:sass_path] = File.join(source, config[:sass_dir])
+        end
         unless config.has_key? :css_path
           config[:css_path] = File.join(real_destination, config[:css_dir])
         end
