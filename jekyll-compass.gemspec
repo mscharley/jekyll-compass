@@ -14,6 +14,6 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/mscharley/jekyll-compass'
 
   s.add_runtime_dependency 'compass', '~> 1.0'
-  s.add_runtime_dependency 'jekyll', '~> 2.0'
+  s.add_runtime_dependency 'jekyll', '~> 3.0'
 
 end
