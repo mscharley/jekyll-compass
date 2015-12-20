@@ -8,6 +8,8 @@ jekyll-compass: Compass generator for Jekyll websites
 **Copyright:** 2013  
 **License:** [MIT license][license]
 
+**Not maintained here any longer**: [See the fork by @chikamichi](https://github.com/chikamichi/jekyll-compass)
+
 Synopsis
 --------
 
