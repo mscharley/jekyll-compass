@@ -92,5 +92,5 @@ There is also a `import_paths` key which is analogous to the `add_import_path` l
   [gh-contrib]: https://github.com/mscharley/jekyll-compass/graphs/contributors
   [gh-issues]: https://github.com/mscharley/jekyll-compass/issues
 
-  [compass-props]: http://compass-style.org/help/tutorials/configuration-reference/
+  [compass-props]: http://compass-style.org/help/documentation/configuration-reference/
   [sass-props]: http://sass-lang.com/documentation/file.SASS_REFERENCE.html#options
