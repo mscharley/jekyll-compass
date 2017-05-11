@@ -1,7 +1,6 @@
-
 Gem::Specification.new do |s|
   s.name        = 'jekyll-compass'
-  s.version     = '1.3.0.pre'
+  s.version     = '2.0.0'
   s.summary     = "Jekyll generator plugin to build Compass projects during site build"
   s.description = <<-EOF
     This project is a plugin for the Jekyll static website generator to allow for using Compass projects with your
@@ -14,6 +13,5 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/mscharley/jekyll-compass'
 
   s.add_runtime_dependency 'compass', '~> 1.0'
-  s.add_runtime_dependency 'jekyll', '~> 2.0'
-
+  s.add_runtime_dependency 'jekyll', '~> 3.0'
 end
